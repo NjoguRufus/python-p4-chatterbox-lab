@@ -6,20 +6,15 @@ from models import db, Message
 class TestMessage:
     '''Message model in models.py'''
 
-    with app.app_context():
-        m = Message.query.filter(
-            Message.body == "Hello 👋"
-            ).filter(Message.username == "Liza")
-
-        for message in m:
-            db.session.delete(message)
-
-        db.session.commit()
+    def setup_method(self):
+        '''Deletes all messages from the database before each test.'''
+        with app.app_context():
+            Message.query.delete()
+            db.session.commit()
 
     def test_has_correct_columns(self):
         '''has columns for message body, username, and creation time.'''
         with app.app_context():
-
             hello_from_liza = Message(
                 body="Hello 👋",
                 username="Liza")
